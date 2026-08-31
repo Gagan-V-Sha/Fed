@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Happy Birthday Federica</title>
+    <meta name="theme-color" content="#1A223A" id="meta-theme">
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- GSAP -->
@@ -29,12 +30,13 @@
 
         body {
             font-family: var(--font-body);
-            background-color: var(--bg-light);
+            background-color: #1A223A;
             color: var(--text-dark);
             overflow: hidden; /* No scrolling */
             line-height: 1.6;
             width: 100vw;
             height: 100dvh;
+            transition: background-color 1.2s ease-in-out;
         }
 
         #app {
@@ -204,10 +206,10 @@
             background: #eee;
         }
         
-        .p1 { top: 4%; left: 2%; transform: rotate(-6deg); }
-        .p2 { top: 8%; right: 2%; transform: rotate(8deg); }
-        .p3 { bottom: 5%; left: 4%; transform: rotate(-4deg); }
-        .p4 { bottom: 6%; right: 3%; transform: rotate(6deg); }
+        .p1 { top: 2%; left: -2%; transform: rotate(-6deg); }
+        .p2 { top: 4%; right: -2%; transform: rotate(8deg); }
+        .p3 { bottom: 2%; left: 0%; transform: rotate(-4deg); }
+        .p4 { bottom: 3%; right: -1%; transform: rotate(6deg); }
         
         @media (min-width: 768px) {
             .p1 { top: 6%; left: 8%; transform: rotate(-10deg); }
@@ -218,11 +220,11 @@
 
         .glass-panel {
             position: relative;
-            width: 92%; max-width: 700px;
+            width: 88%; max-width: 700px;
             background: rgba(255, 251, 244, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+            padding: clamp(1.2rem, 4vw, 4rem) clamp(1rem, 3vw, 3rem);
             border-radius: 12px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(255,255,255,0.6);
             text-align: center;
@@ -230,12 +232,12 @@
             opacity: 0;
             transform: scale(0.95);
         }
-
+        
         .glass-panel h2 {
             font-family: var(--font-head);
-            font-size: clamp(2.2rem, 6vw, 3.5rem);
+            font-size: clamp(1.8rem, 6vw, 3.5rem);
             color: var(--sunset-deep);
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             font-style: italic;
             line-height: 1.1;
         }
@@ -245,16 +247,17 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
-            margin-bottom: 2.5rem;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
         }
         .reason-list li {
-            font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+            font-size: clamp(0.85rem, 2vw, 1.2rem);
             color: var(--text-dark);
             font-weight: 400;
             display: flex;
             align-items: flex-start;
-            gap: 1rem;
+            gap: 0.6rem;
+            line-height: 1.4;
         }
         .reason-list .num {
             font-family: var(--font-head);
@@ -300,7 +303,7 @@
         .cake-deco {
             position: absolute;
             z-index: 0;
-            opacity: 0.9;
+            opacity: 0.15;
             animation: float-deco 6s infinite ease-in-out alternate;
             filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
         }
@@ -448,6 +451,8 @@
                 .to(letterCard, { y: '-150%', duration: 0.4, ease: 'power3.out', delay: 0.2 })
                 .to(stage1, { opacity: 0, duration: 0.4, ease: 'power2.inOut', delay: 0.1 })
                 .call(() => {
+                    document.body.style.backgroundColor = 'var(--bg-light)';
+                    document.getElementById('meta-theme').setAttribute('content', '#FFFBF4');
                     stage1.classList.remove('active');
                     stage2.classList.add('active');
 
@@ -474,6 +479,8 @@
 
         // Transition 2 -> 3
         btnFinale.addEventListener('click', () => {
+            document.body.style.backgroundColor = 'var(--bg-dark)';
+            document.getElementById('meta-theme').setAttribute('content', '#2B192E');
             stage2.classList.remove('active');
             stage3.classList.add('active');
 
