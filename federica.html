@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Happy Birthday Federica</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        :root {
+            --sunset-deep: #D9534F; 
+            --sunset-mid: #F29C38;  
+            --sunset-light: #F9D976; 
+            --bg-dark: #2B192E;     
+            --bg-light: #FFFBF4;    
+            --text-dark: #3E2723;   
+            --text-light: #FDF9F1;  
+            
+            --font-head: 'Cormorant Garamond', serif;
+            --font-body: 'Lato', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow: hidden; /* No scrolling */
+            line-height: 1.6;
+            width: 100vw;
+            height: 100dvh;
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ---------------------------
+           STAGES
+        --------------------------- */
+        .stage {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.2s ease-in-out;
+            overflow: hidden;
+        }
+        .stage.active {
+            opacity: 1;
+            pointer-events: all;
+            z-index: 10;
+        }
+
+        /* ---------------------------
+           STAGE 1: LANDING WITH ENVELOPE
+        --------------------------- */
+        #stage-1 {
+            background: radial-gradient(circle at center, #1A223A 0%, #0D111D 100%);
+            color: var(--text-light);
+        }
+        .stars {
+            position: absolute; width: 2px; height: 2px; background: transparent;
+            box-shadow: 15vw 20vh #FFF, 80vw 10vh #FFD700, 50vw 50vh #FFF, 20vw 80vh #FFD700, 90vw 90vh #FFF, 40vw 30vh #FFF, 60vw 80vh #FFF, 75vw 45vh #FFD700;
+            border-radius: 50%; opacity: 0.8;
+            animation: twinkle 4s infinite alternate;
+        }
+        .stars2 {
+            position: absolute; width: 3px; height: 3px; background: transparent;
+            box-shadow: 10vw 40vh #FFD700, 85vw 70vh #FFF, 30vw 90vh #FFF, 70vw 20vh #FFD700, 25vw 15vh #FFF;
+            border-radius: 50%; opacity: 0.6;
+            animation: twinkle 3s infinite alternate-reverse;
+        }
+        @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .sun-glow {
+            position: absolute;
+            width: 70vw; height: 70vw; max-width: 600px; max-height: 600px;
+            background: radial-gradient(circle, rgba(255,246,197,0.9) 0%, rgba(249,217,118,0.5) 40%, transparent 70%);
+            bottom: -15%;
+            border-radius: 50%;
+            z-index: 1;
+            filter: blur(50px);
+            animation: pulse-glow 8s infinite alternate ease-in-out;
+        }
+        @keyframes pulse-glow {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            100% { transform: scale(1.15); opacity: 1; }
+        }
+
+        /* Envelope Scene */
+        .envelope-scene {
+            position: relative; z-index: 5;
+            display: flex; flex-direction: column; align-items: center; gap: 3rem;
+            perspective: 1200px; cursor: pointer;
+        }
+        .tap-hint {
+            font-family: var(--font-body); font-size: 1.2rem;
+            letter-spacing: 3px; text-transform: uppercase; color: var(--sunset-light);
+            animation: pulse-hint 2s infinite ease-in-out;
+        }
+        @keyframes pulse-hint {
+            0%, 100% { opacity: 0.6; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+
+        .envelope-wrapper {
+            animation: float-env 5s ease-in-out infinite;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+        @keyframes float-env {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        .envelope {
+            width: clamp(280px, 70vw, 400px); height: clamp(180px, 45vw, 260px);
+            position: relative; transform-style: preserve-3d;
+        }
+        .env-body {
+            position: absolute; inset: 0;
+            background: #e6c253;
+            border-radius: 4px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4), inset 0 0 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .env-bl { position:absolute; bottom:0; left:0; width:50%; height:55%; background:linear-gradient(120deg, #d4af37, #e6c253); clip-path:polygon(0 100%, 100% 100%, 0 0); }
+        .env-br { position:absolute; bottom:0; right:0; width:50%; height:55%; background:linear-gradient(120deg, #d4af37, #e6c253); clip-path:polygon(0 100%, 100% 100%, 100% 0); }
+        .env-flap {
+            position: absolute; top:0; left:0; right:0; height:55%;
+            background: linear-gradient(160deg, #f7e089 0%, #e6c253 60%, #c59f2a 100%);
+            clip-path: polygon(0 0, 100% 0, 50% 85%);
+            transform-origin: top center; transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+            z-index: 3; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .env-label {
+            position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%);
+            font-family: 'Caveat', cursive; font-size: 2rem;
+            color: #3e2e0e; z-index: 2; white-space: nowrap;
+            letter-spacing: 0.5px; opacity: 0.8;
+        }
+        .wax-seal {
+            position: absolute; top: calc(50% - 30px); left: 50%; transform: translateX(-50%);
+            width: 60px; height: 60px;
+            background: radial-gradient(circle at 35% 35%, #e63946, #900c19);
+            border-radius: 50%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 2px 3px rgba(255,150,150,0.4);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem;
+            z-index: 4; transition: transform 0.4s cubic-bezier(0.34,1.4,0.64,1), opacity 0.4s ease;
+        }
+        .wax-seal .mini-heart {
+            position: absolute; top: -20px; font-size: 1.5rem;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+        }
+        .letter-card {
+            position: absolute; width: 90%; left: 5%; height: 92%; bottom: 4%;
+            background: rgba(255,255,255,0.95);
+            border-radius: 4px; z-index: 2; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+        .envelope.open .env-flap { transform: rotateX(-170deg); }
+        .envelope.open .wax-seal { opacity: 0; transform: translateX(-50%) scale(0); }
+
+        /* ---------------------------
+           STAGE 2: MOODBOARD 
+        --------------------------- */
+        #stage-2 {
+            background: var(--bg-light);
+            background-image: radial-gradient(circle at 100% 0%, rgba(242,156,56,0.1) 0%, transparent 50%),
+                              radial-gradient(circle at 0% 100%, rgba(217,83,79,0.05) 0%, transparent 50%);
+        }
+
+        .scatter-photo {
+            position: absolute;
+            width: clamp(140px, 30vw, 320px);
+            aspect-ratio: 4/5;
+            background: #fff;
+            padding: clamp(6px, 1.5vw, 12px);
+            padding-bottom: clamp(25px, 5vw, 50px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border-radius: 2px;
+            z-index: 1;
+            opacity: 0;
+        }
+        .scatter-photo img {
+            width: 100%; height: 100%; object-fit: cover;
+            background: #eee;
+        }
+        
+        .p1 { top: 4%; left: 2%; transform: rotate(-6deg); }
+        .p2 { top: 8%; right: 2%; transform: rotate(8deg); }
+        .p3 { bottom: 5%; left: 4%; transform: rotate(-4deg); }
+        .p4 { bottom: 6%; right: 3%; transform: rotate(6deg); }
+        
+        @media (min-width: 768px) {
+            .p1 { top: 6%; left: 8%; transform: rotate(-10deg); }
+            .p2 { top: 6%; right: 8%; transform: rotate(12deg); }
+            .p3 { bottom: 8%; left: 8%; transform: rotate(-5deg); }
+            .p4 { bottom: 8%; right: 8%; transform: rotate(8deg); }
+        }
+
+        .glass-panel {
+            position: relative;
+            width: 92%; max-width: 700px;
+            background: rgba(255, 251, 244, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+            border-radius: 12px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.08), inset 0 0 0 1px rgba(255,255,255,0.6);
+            text-align: center;
+            z-index: 10;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .glass-panel h2 {
+            font-family: var(--font-head);
+            font-size: clamp(2.2rem, 6vw, 3.5rem);
+            color: var(--sunset-deep);
+            margin-bottom: 2rem;
+            font-style: italic;
+            line-height: 1.1;
+        }
+
+        .reason-list {
+            text-align: left;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+        .reason-list li {
+            font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+            color: var(--text-dark);
+            font-weight: 400;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .reason-list .num {
+            font-family: var(--font-head);
+            font-style: italic;
+            color: var(--sunset-mid);
+            font-size: 1.5em;
+            line-height: 1.1;
+            min-width: 30px;
+        }
+
+        .btn-elegant {
+            font-family: var(--font-body);
+            font-size: clamp(0.8rem, 2vw, 1rem); 
+            letter-spacing: 2px; text-transform: uppercase;
+            padding: 1.2rem 3rem;
+            border-radius: 4px;
+            cursor: pointer; z-index: 2;
+            transition: all 0.4s ease;
+        }
+        .dark-btn {
+            background: var(--sunset-deep);
+            color: #fff;
+            border: none;
+            box-shadow: 0 10px 20px rgba(217, 83, 79, 0.2);
+        }
+        .dark-btn:hover {
+            background: var(--bg-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(43, 25, 46, 0.3);
+        }
+
+        /* ---------------------------
+           STAGE 3: FINALE
+        --------------------------- */
+        #stage-3 {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            text-align: center;
+            padding: 2rem;
+            overflow: hidden;
+        }
+        
+        .cake-deco {
+            position: absolute;
+            z-index: 0;
+            opacity: 0.9;
+            animation: float-deco 6s infinite ease-in-out alternate;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+        }
+        @keyframes float-deco {
+            0% { transform: translateY(0) rotate(-5deg); }
+            100% { transform: translateY(-20px) rotate(5deg); }
+        }
+        .deco-1 { top: 15%; left: 10%; animation-delay: 0s; font-size: 4rem; }
+        .deco-2 { top: 20%; right: 10%; animation-delay: 1s; font-size: 3.5rem; }
+        .deco-3 { bottom: 20%; left: 15%; animation-delay: 2s; font-size: 4.5rem; }
+        .deco-4 { bottom: 15%; right: 10%; animation-delay: 0.5s; font-size: 3.8rem; }
+        .deco-5 { top: 45%; left: 5%; animation-delay: 1.5s; font-size: 3rem; }
+        .deco-6 { top: 55%; right: 5%; animation-delay: 0.8s; font-size: 3.2rem; }
+        
+        #fireflies-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+        .finale-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; opacity: 0; transform: translateY(30px); }
+        .finale-content h2 { 
+            font-family: var(--font-head); font-size: clamp(2rem, 5vw, 3.5rem); font-style: italic;
+            color: var(--sunset-light); margin-bottom: 3rem; 
+        }
+        
+        .heartfelt-msg {
+            font-family: var(--font-head); font-size: clamp(1.6rem, 4vw, 2.5rem);
+            line-height: 1.6; font-style: italic; font-weight: 300;
+            color: rgba(253, 249, 241, 0.95);
+        }
+        .footer-signature {
+            margin-top: 5rem; font-family: var(--font-body); font-size: 0.9rem;
+            letter-spacing: 4px; text-transform: uppercase; color: var(--sunset-mid);
+            opacity: 0.8;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <!-- STAGE 1: LANDING WITH ENVELOPE -->
+    <section id="stage-1" class="stage active">
+        <div class="stars"></div><div class="stars2"></div>
+        <div class="envelope-scene" id="envelope-scene">
+            <p class="tap-hint" style="font-family: 'Caveat', cursive; font-size: 2.5rem; text-transform: none; letter-spacing: 1px; color: #FFF;">✨ Tap to open ✨</p>
+            <div class="envelope-wrapper" id="envelope-wrapper">
+                <div class="envelope" id="envelope">
+                    <div class="env-body"></div>
+                    <div class="env-bl"></div>
+                    <div class="env-br"></div>
+                    <div class="env-flap"></div>
+                    <div class="wax-seal">
+                        <span class="mini-heart">🤍</span>
+                        👑
+                    </div>
+                    <div class="letter-card" id="letter-card"></div>
+                    <div class="env-label">Per la mia sorellina</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STAGE 2: MOODBOARD (Contents) -->
+    <section id="stage-2" class="stage">
+        <!-- Floating scattered photos -->
+        <div class="scatter-photo p1">
+            <img src="images/mem1.jpg" alt="Memory">
+        </div>
+        <div class="scatter-photo p2">
+            <img src="images/mem2.jpg" alt="Memory">
+        </div>
+        <div class="scatter-photo p3">
+            <img src="images/mem3.jpg" alt="Memory">
+        </div>
+        <div class="scatter-photo p4">
+            <img src="images/mem4.jpg" alt="Memory">
+        </div>
+
+        <!-- Center Content Box -->
+        <div class="glass-panel">
+            <h2>Perché sei speciale</h2>
+            <ul class="reason-list">
+                <li><span style="color: var(--sunset-mid);">✨</span> <span>Trovi la felicità nelle piccole cose e ami perderti nella bellezza della natura.</span></li>
+                <li><span style="color: var(--sunset-mid);">✨</span> <span>Sei così entusiasta e solare; in una sola settimana sei diventata una grande amica, come una sorella.</span></li>
+                <li><span style="color: var(--sunset-mid);">✨</span> <span>Amo il tuo modo di vedere la vita e come abbiamo iniziato a condividere tutto fin da subito.</span></li>
+                <li><span style="color: var(--sunset-mid);">✨</span> <span>Hai una luce unica che illumina tutto ciò che ti circonda.</span></li>
+            </ul>
+            <button id="btn-finale" class="btn-elegant dark-btn">Il mio messaggio per te ✨</button>
+        </div>
+    </section>
+
+    <!-- STAGE 3: FINALE -->
+    <section id="stage-3" class="stage">
+        <canvas id="fireflies-canvas"></canvas>
+        
+        <!-- Birthday Decorations -->
+        <div class="cake-deco deco-1">🎂</div>
+        <div class="cake-deco deco-2">🎈</div>
+        <div class="cake-deco deco-3">🎁</div>
+        <div class="cake-deco deco-4">🍰</div>
+        <div class="cake-deco deco-5">🎉</div>
+        <div class="cake-deco deco-6">✨</div>
+
+        <div class="finale-content">
+            <h2>Buon Compleanno, Federica!</h2>
+            <p class="heartfelt-msg" style="font-size: clamp(1.1rem, 2.2vw, 1.6rem); text-align: left; max-width: 900px; margin: 0 auto; line-height: 1.8; font-style: normal; font-family: var(--font-body);">
+                <span style="font-family: var(--font-head); font-style: italic; font-size: 1.3em; color: var(--sunset-mid); display: block; margin-bottom: 1.5rem; text-align: center; opacity: 0.9;">
+                    "Keep looking for the magic in little things, farti spettinare dal vento, and smile at life con quella luce unica che hai solo tu."
+                </span>
+                Sono stato così felice di passare del tempo con te. Mi sono sentito a mio agio nel confidarti cose così personali che non avevo condiviso con nessun altro lì. Spero davvero che il nostro legame rimanga così forte per tutta la vita.<br><br>
+                Non esitare mai a chiamarmi o a scrivermi per qualsiasi cosa! E prima o poi devi assolutamente venire a visitare la mia città!<br><br>
+                Ti voglio un mondo di bene, sorellina. Tantissimi auguri di buon compleanno (non so quanti anni compi hihi, perdonami!).<br><br>
+                Spero di rivederti presto!
+            </p>
+            <div class="footer-signature">Con tanto affetto</div>
+        </div>
+    </section>
+</div>
+
+    <script>
+        const stage1 = document.getElementById('stage-1');
+        const stage2 = document.getElementById('stage-2');
+        const stage3 = document.getElementById('stage-3');
+        
+        const envScene = document.getElementById('envelope-scene');
+        const envelope = document.getElementById('envelope');
+        const letterCard = document.getElementById('letter-card');
+        const envWrapper = document.getElementById('envelope-wrapper');
+        const btnFinale = document.getElementById('btn-finale');
+
+        // Transition 1 -> 2 (Envelope Open)
+        let envOpened = false;
+
+        const handleOpen = () => {
+            if(envOpened) return;
+            envOpened = true;
+
+            // Stop floating animation
+            envWrapper.style.animation = 'none';
+            
+            // Open animation
+            gsap.to(envWrapper, { rotateY: 15, rotateX: -10, duration: 0.3, ease: "power2.out" });
+            envelope.classList.add('open');
+
+            // Slide out letter & transition
+            gsap.timeline()
+                .to(letterCard, { y: '-150%', duration: 0.4, ease: 'power3.out', delay: 0.2 })
+                .to(stage1, { opacity: 0, duration: 0.4, ease: 'power2.inOut', delay: 0.1 })
+                .call(() => {
+                    stage1.classList.remove('active');
+                    stage2.classList.add('active');
+
+                    // Animate Moodboard Entrance
+                    gsap.fromTo('.scatter-photo', 
+                        { opacity: 0, scale: 0.8, rotation: () => Math.random() * 40 - 20 },
+                        { opacity: 1, scale: 1, rotation: (i, target) => {
+                            if(target.classList.contains('p1')) return -10;
+                            if(target.classList.contains('p2')) return 12;
+                            if(target.classList.contains('p3')) return -5;
+                            return 7;
+                        }, duration: 0.6, stagger: 0.05, ease: "back.out(1.2)" }
+                    );
+
+                    gsap.to('.glass-panel', {
+                        opacity: 1, scale: 1, duration: 0.6, ease: "power3.out", delay: 0.1
+                    });
+                });
+        };
+
+        // Bind event to the entire stage to fix double-tap/click issues
+        stage1.addEventListener('click', handleOpen);
+        stage1.addEventListener('touchstart', handleOpen, {passive: true});
+
+        // Transition 2 -> 3
+        btnFinale.addEventListener('click', () => {
+            stage2.classList.remove('active');
+            stage3.classList.add('active');
+
+            triggerFireflies();
+            
+            gsap.to('.finale-content', {
+                opacity: 1, y: 0, duration: 2, ease: "power2.out", delay: 1
+            });
+        });
+
+        // Custom Canvas Fireflies
+        function triggerFireflies() {
+            const cvs = document.getElementById('fireflies-canvas');
+            const ctx = cvs.getContext('2d');
+            
+            function resize() {
+                cvs.width = window.innerWidth; 
+                cvs.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const colors = ['#F9D976', '#F29C38', '#FFFFFF', '#D9534F'];
+            const particles = Array.from({length: 100}, () => ({
+                x: Math.random() * cvs.width,
+                y: Math.random() * cvs.height,
+                vx: (Math.random() - 0.5) * 1.5,
+                vy: (Math.random() - 0.5) * 1.5 - 0.5,
+                size: Math.random() * 3 + 1,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                life: Math.random() * Math.PI * 2,
+                pulseSpeed: Math.random() * 0.05 + 0.01
+            }));
+
+            function loop() {
+                ctx.clearRect(0, 0, cvs.width, cvs.height);
+                
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.life += p.pulseSpeed;
+                    
+                    if(p.x < 0) p.x = cvs.width;
+                    if(p.x > cvs.width) p.x = 0;
+                    if(p.y < 0) p.y = cvs.height;
+                    
+                    const opacity = (Math.sin(p.life) + 1) / 2 * 0.8 + 0.1;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = opacity;
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = p.color;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                    ctx.shadowBlur = 0;
+                });
+                
+                if (stage3.classList.contains('active')) {
+                    requestAnimationFrame(loop);
+                }
+            }
+            loop();
+        }
+    </script>
+</body>
+</html>
